@@ -1,51 +1,59 @@
-pipeline {
-    agent any
+pipeline {  
+    agent any  
     
-    environment {
-        DOCKER_IMAGE_NAME = 'revathi-tadela1/dev1'
-        EC2_SERVER_IP = '34.228.194.16'
-        SSH_KEY_PATH = '/home/ec2-user/devops-build.pem'
-    }
+    environment {  
+        DOCKER_IMAGE_NAME = 'revathi-tadela1/dev1'  
+        EC2_SERVER_IP = '34.228.194.16'  
+        SSH_KEY_PATH = '/home/ec2-user/devops-build.pem'  
+    }  
 
-    stages {
-        stage('Clone Repo') {
-            steps {
-                checkout scm
-            }
-        }
+    stages {  
+        stage('Clone Repo') {  
+            steps {  
+                checkout scm  
+            }  
+        }  
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build(DOCKER_IMAGE_NAME)
-                }
-            }
-        }
+        stage('Build Docker Image') {  
+            steps {  
+                script {  
+                    // Build the Docker image  
+                    docker.build(DOCKER_IMAGE_NAME)  
+                }  
+            }  
+        }  
 
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('', 'docker-hub-credentials') {
-                        docker.image(DOCKER_IMAGE_NAME).push('latest')
-                    }
-                }
-            }
-        }
+        stage('Push to Docker Hub') {  
+            steps {  
+                script {  
+                    // Push the Docker image to Docker Hub  
+                    docker.withRegistry('', 'docker-hub-credentials') {  
+                        docker.image(DOCKER_IMAGE_NAME).push('latest')  
+                    }  
+                }  
+            }  
+        }  
 
-        stage('Deploy to EC2') {
-            steps {
-                script {
-                    sh """
-                    ssh -i ${SSH_KEY_PATH} ec2-user@${EC2_SERVER_IP} '
-                        docker pull ${DOCKER_IMAGE_NAME}:latest &&
-                        docker ps -q --filter "ancestor=${DOCKER_IMAGE_NAME}:latest" | xargs -r docker stop &&
-                        docker ps -a -q --filter "ancestor=${DOCKER_IMAGE_NAME}:latest" | xargs -r docker rm &&
-                        docker run -d -p 80:80 ${DOCKER_IMAGE_NAME}:latest
-                    '
-                    """
-                }
-            }
-        }
-    }
+        stage('Deploy to EC2') {  
+            steps {  
+                script {  
+                    // Deploy the Docker image on EC2  
+                    sh """  
+                    ssh -i ${SSH_KEY_PATH} ec2-user@${EC2_SERVER_IP} '  
+                        set -x;  # Enable debugging  
+                        # Pull the latest image  
+                        docker pull ${DOCKER_IMAGE_NAME}:latest || { echo "Failed to pull image"; exit 1; }  
+                        
+                        # Stop and remove any running containers from this image  
+                        docker ps -q --filter "ancestor=${DOCKER_IMAGE_NAME}:latest" | xargs -r docker stop || true  
+                        docker ps -a -q --filter "ancestor=${DOCKER_IMAGE_NAME}:latest" | xargs -r docker rm || true  
+                        
+                        # Run the new container in detached mode  
+                        docker run -d -p 80:80 ${DOCKER_IMAGE_NAME}:latest || { echo "Failed to run container"; exit 1; }  
+                    '  
+                    """  
+                }  
+            }  
+        }  
+    }  
 }
-
