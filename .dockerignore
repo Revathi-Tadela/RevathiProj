@@ -1,0 +1,16 @@
+# Ignore node_modules (they will be installed inside the container)
+node_modules/
+
+# Ignore Dockerfile itself
+Dockerfile
+
+# Ignore build-related files
+build/
+
+# Ignore Git-related files
+.git/
+.gitignore
+
+# Ignore log files
+*.log
+
