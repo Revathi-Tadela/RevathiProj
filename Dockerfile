@@ -5,7 +5,7 @@ FROM node:18-alpine
 WORKDIR /usr/src/app
 
 # Copy application files to the container
-COPY build/ ./build
+COPY build/ /usr/src/app/build/
 
 # Install a lightweight HTTP server to serve the static files
 RUN npm install -g serve
@@ -15,4 +15,3 @@ EXPOSE 80
 
 # Command to run the application
 CMD ["serve", "-s", "build", "-l", "80"]
-

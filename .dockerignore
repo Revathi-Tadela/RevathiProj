@@ -4,13 +4,18 @@ node_modules/
 # Ignore Dockerfile itself
 Dockerfile
 
-# Ignore build-related files
-build/
-
 # Ignore Git-related files
 .git/
 .gitignore
 
 # Ignore log files
 *.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary and swap files
+*.tmp
+*.swp
 
