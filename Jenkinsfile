@@ -6,6 +6,7 @@ pipeline {
         DEV_REPO = 'rev'
         PROD_REPO = 'prod'
         GIT_CREDENTIALS = '<Jenkins-GitHub-Credential-ID>'
+        BRANCH_NAME = 'dev'
         DOCKER_CLI_EXPERIMENTAL = 'enabled'
     }
 
