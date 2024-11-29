@@ -7,4 +7,12 @@ services:
     ports:
       - "80:80"
     container_name: devops-app
+=======
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    restart: always
 

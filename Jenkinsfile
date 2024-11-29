@@ -2,25 +2,25 @@ pipeline {
     agent any
 
     environment {
+        DOCKER_IMAGE = 'revathitadela1/rev'
+        DEV_REPO = 'rev'
+        PROD_REPO = 'prod'
+        GIT_CREDENTIALS = '<Jenkins-GitHub-Credential-ID>'
         DOCKER_CLI_EXPERIMENTAL = 'enabled'
-        DOCKER_IMAGE_NAME = 'revathitadela1/rev'
-        DEV_DOCKER_TAG = 'rev'
-        PROD_DOCKER_TAG = 'prod'
-        GIT_REPO = 'https://github.com/Revathi-Tadela/New_Project.git'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: "${GIT_REPO}", branch: "${BRANCH_NAME}"
+                git url: 'https://github.com/Revathi-Tadela/RevathiProj.git',
+                    branch: env.BRANCH_NAME, credentialsId: "${GIT_CREDENTIALS}"
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ."
+                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
                 }
             }
         }
@@ -31,29 +31,22 @@ pipeline {
             }
             steps {
                 script {
-                    // Tag and push to 'dev' repo on Docker Hub
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ${DOCKER_IMAGE_NAME}:${DEV_DOCKER_TAG}"
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${DEV_DOCKER_TAG}"
+                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:${DEV_REPO}"
+                    sh "docker push ${DOCKER_IMAGE}:${DEV_REPO}"
                 }
             }
         }
 
-        stage('Push to Prod on Merge') {
+        stage('Push to Prod') {
             when {
                 branch 'master'
             }
             steps {
                 script {
-                    // Tag and push to 'prod' repo on Docker Hub
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ${DOCKER_IMAGE_NAME}:${PROD_DOCKER_TAG}"
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${PROD_DOCKER_TAG}"
+                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:${PROD_REPO}"
+                    sh "docker push ${DOCKER_IMAGE}:${PROD_REPO}"
                 }
             }
-        }
-    }
-    post {
-        always {
-            cleanWs()
         }
     }
 }

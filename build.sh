@@ -24,4 +24,6 @@ sudo docker push $DOCKER_HUB_USER/$DOCKER_HUB_REPO:latest
 sudo docker push $DOCKER_HUB_USER/$DOCKER_HUB_REPO:dev
 
 echo "Build and push completed successfully."
+=======
+docker build -t <dockerhub-username>/dev:<tag> .
 

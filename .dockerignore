@@ -19,3 +19,8 @@ Thumbs.db
 *.tmp
 *.swp
 
+=======
+.git
+.env
+node_modules/
+

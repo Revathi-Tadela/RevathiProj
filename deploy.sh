@@ -18,4 +18,8 @@ echo "Starting new container..."
 sudo docker run -d --name $CONTAINER_NAME -p 80:80 $IMAGE_NAME
 
 echo "Deployment completed successfully."
+=======
+docker pull <dockerhub-username>/dev:<tag>
+docker run -d -p 80:80 <dockerhub-username>/dev:<tag>
+
 
