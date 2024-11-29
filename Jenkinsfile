@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Revathi-Tadela/RevathiProj.git',
+                git url: 'https://github.com/Revathi-Tadela/RevathiProj.git', branch: 'dev'
                     branch: env.BRANCH_NAME, credentialsId: "${GIT_CREDENTIALS}"
             }
         }
