@@ -12,8 +12,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Revathi-Tadela/RevathiProj.git', branch: 'dev'
-                    branch: env.BRANCH_NAME, credentialsId: "${GIT_CREDENTIALS}"
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: "*/${env.BRANCH_NAME}"]], 
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Revathi-Tadela/RevathiProj.git',
+                        credentialsId: GIT_CREDENTIALS
+                    ]]
+                ])
             }
         }
 
